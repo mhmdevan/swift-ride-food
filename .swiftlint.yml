@@ -1,0 +1,35 @@
+included:
+  - App
+  - Packages
+
+excluded:
+  - .build
+  - DerivedData
+
+opt_in_rules:
+  - explicit_init
+  - empty_count
+  - contains_over_filter_count
+  - sorted_first_last
+
+disabled_rules:
+  - file_length
+  - function_body_length
+  - type_body_length
+
+line_length:
+  warning: 140
+  error: 180
+
+type_name:
+  min_length: 3
+  max_length:
+    warning: 50
+    error: 60
+
+identifier_name:
+  min_length:
+    warning: 2
+  excluded:
+    - id
+    - ui

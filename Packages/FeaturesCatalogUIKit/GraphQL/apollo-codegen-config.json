@@ -1,0 +1,27 @@
+{
+  "schemaNamespace": "FeaturesCatalogGraphQL",
+  "input": {
+    "operationSearchPaths": [
+      "GraphQL/Operations/*.graphql"
+    ],
+    "schemaSearchPaths": [
+      "GraphQL/Schema/*.graphqls"
+    ]
+  },
+  "output": {
+    "testMocks": {
+      "none": {}
+    },
+    "schemaTypes": {
+      "path": "Sources/FeaturesCatalogUIKit/Data/GraphQL/Generated",
+      "moduleType": {
+        "embeddedInTarget": {
+          "name": "FeaturesCatalogUIKit"
+        }
+      }
+    },
+    "operations": {
+      "inSchemaModule": {}
+    }
+  }
+}

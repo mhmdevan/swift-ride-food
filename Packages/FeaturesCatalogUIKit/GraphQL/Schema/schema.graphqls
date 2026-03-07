@@ -1,0 +1,22 @@
+schema {
+  query: Query
+}
+
+type Query {
+  offersFeed(cursor: String, limit: Int!): OffersFeedPage!
+  offerDetail(id: ID!): Offer!
+}
+
+type OffersFeedPage {
+  items: [Offer!]!
+  nextCursor: String
+}
+
+type Offer {
+  id: ID!
+  title: String!
+  subtitle: String!
+  priceText: String!
+  badgeText: String
+  imageURL: String
+}

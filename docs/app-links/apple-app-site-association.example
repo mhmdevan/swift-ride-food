@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": [
+          "<TEAM_ID>.com.evan.swiftridefood"
+        ],
+        "components": [
+          {
+            "/": "/offers/*",
+            "comment": "Route universal links to Offer Detail."
+          }
+        ]
+      }
+    ]
+  }
+}

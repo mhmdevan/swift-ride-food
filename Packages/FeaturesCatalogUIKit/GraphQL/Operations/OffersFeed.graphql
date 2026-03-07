@@ -1,0 +1,13 @@
+query OffersFeed($cursor: String, $limit: Int!) {
+  offersFeed(cursor: $cursor, limit: $limit) {
+    nextCursor
+    items {
+      id
+      title
+      subtitle
+      priceText
+      badgeText
+      imageURL
+    }
+  }
+}

@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  lint:
+    name: SwiftLint
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install SwiftLint
+        run: brew install swiftlint
+
+      - name: Run SwiftLint
+        run: ./scripts/lint.sh
+
+  package-tests:
+    name: Swift Package Tests
+    runs-on: macos-14
+    needs: lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run package tests
+        run: ./scripts/test-packages.sh
+
+  ios-build:
+    name: iOS Build
+    runs-on: macos-14
+    needs: package-tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build app target
+        run: ./scripts/build-ios.sh
+
+  ios-tests:
+    name: iOS Tests
+    runs-on: macos-14
+    needs: ios-build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Run iOS tests
+        run: ./scripts/test-ios.sh
+
+  ios-performance:
+    name: iOS Performance Tests
+    runs-on: macos-14
+    needs: ios-tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Run performance tests
+        run: ./scripts/test-ios-performance.sh
+
+      - name: Upload performance result bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-performance-xcresult
+          path: build/PerformanceTests.xcresult
+
+  test-evidence:
+    name: Test Matrix Evidence
+    runs-on: macos-14
+    if: always()
+    needs:
+      - lint
+      - package-tests
+      - ios-build
+      - ios-tests
+      - ios-performance
+    steps:
+      - name: Build evidence summary
+        run: |
+          mkdir -p build
+          cat <<EOF > build/test-matrix-evidence.md
+          # CI Test Matrix Evidence
+
+          Generated at: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          | Layer | Job | Result |
+          | --- | --- | --- |
+          | Lint | lint | ${{ needs.lint.result }} |
+          | Unit/Integration (Packages) | package-tests | ${{ needs['package-tests'].result }} |
+          | iOS Build | ios-build | ${{ needs['ios-build'].result }} |
+          | UI / App Tests | ios-tests | ${{ needs['ios-tests'].result }} |
+          | Performance | ios-performance | ${{ needs['ios-performance'].result }} |
+          EOF
+
+      - name: Upload test evidence artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-matrix-evidence
+          path: build/test-matrix-evidence.md

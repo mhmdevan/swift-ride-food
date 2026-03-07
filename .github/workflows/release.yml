@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload_to_testflight:
+        description: Upload to TestFlight (requires signing + App Store Connect secrets)
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  archive:
+    name: Archive
+    runs-on: macos-14
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Run Fastlane archive lane
+        run: bundle exec fastlane ios archive_ci
+
+      - name: Upload to TestFlight
+        if: ${{ github.event.inputs.upload_to_testflight == 'true' }}
+        env:
+          APP_IDENTIFIER: com.evan.swiftridefood
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+        run: bundle exec fastlane ios testflight

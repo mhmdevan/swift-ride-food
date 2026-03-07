@@ -1,0 +1,70 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Run SwiftLint checks"
+  lane :lint do
+    sh("./scripts/lint.sh")
+  end
+
+  desc "Generate project and run iOS tests"
+  lane :tests do
+    sh("./scripts/bootstrap.sh")
+    sh("./scripts/test-ios.sh")
+  end
+
+  desc "Generate project and build app"
+  lane :build do
+    sh("./scripts/bootstrap.sh")
+    sh("./scripts/build-ios.sh")
+  end
+
+  desc "Generate project and create an unsigned archive"
+  lane :archive_ci do
+    sh("./scripts/bootstrap.sh")
+    sh("./scripts/archive.sh")
+  end
+
+  desc "Increment build number"
+  lane :bump_build do |options|
+    build_number = options[:build_number] || Time.now.strftime("%Y%m%d%H%M")
+    increment_build_number(
+      xcodeproj: "SwiftRideFood.xcodeproj",
+      build_number: build_number
+    )
+  end
+
+  desc "Build and upload to TestFlight (requires signing + ASC API key env vars)"
+  lane :testflight do |options|
+    ensure_env_vars(
+      env_vars: %w[
+        ASC_KEY_ID
+        ASC_ISSUER_ID
+        ASC_KEY_CONTENT
+      ]
+    )
+
+    bump_build(build_number: options[:build_number]) if options[:bump] != false
+
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: ENV["ASC_KEY_CONTENT"],
+      is_key_content_base64: ENV.fetch("ASC_KEY_CONTENT_BASE64", "true") == "true"
+    )
+
+    sh("./scripts/bootstrap.sh")
+
+    build_app(
+      project: "SwiftRideFood.xcodeproj",
+      scheme: "SwiftRideFood",
+      configuration: "Release",
+      export_method: "app-store",
+      clean: true
+    )
+
+    upload_to_testflight(
+      api_key: api_key,
+      skip_waiting_for_build_processing: true
+    )
+  end
+end

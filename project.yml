@@ -1,0 +1,130 @@
+name: SwiftRideFood
+options:
+  bundleIdPrefix: com.evan
+  deploymentTarget:
+    iOS: "17.0"
+packages:
+  Core:
+    path: Packages/Core
+  Networking:
+    path: Packages/Networking
+  Data:
+    path: Packages/Data
+  DesignSystem:
+    path: Packages/DesignSystem
+  Analytics:
+    path: Packages/Analytics
+  FeaturesAuth:
+    path: Packages/FeaturesAuth
+  FeaturesHome:
+    path: Packages/FeaturesHome
+  FeaturesMap:
+    path: Packages/FeaturesMap
+  FeaturesOrders:
+    path: Packages/FeaturesOrders
+  FeaturesCatalogUIKit:
+    path: Packages/FeaturesCatalogUIKit
+  FeatureFlags:
+    path: Packages/FeatureFlags
+  PushNotifications:
+    path: Packages/PushNotifications
+  firebase-ios-sdk:
+    url: https://github.com/firebase/firebase-ios-sdk.git
+    from: 10.0.0
+  sentry-cocoa:
+    url: https://github.com/getsentry/sentry-cocoa.git
+    from: 8.40.0
+targets:
+  SwiftRideFood:
+    type: application
+    platform: iOS
+    sources:
+      - path: App/Sources
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleURLTypes:
+          - CFBundleURLName: com.evan.swiftridefood.links
+            CFBundleURLSchemes:
+              - swiftridefood
+        BGTaskSchedulerPermittedIdentifiers:
+          - com.evan.swiftridefood.offers.refresh
+        SENTRY_DSN: $(SENTRY_DSN)
+        SENTRY_ENVIRONMENT: development
+        UIBackgroundModes:
+          - fetch
+          - remote-notification
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.evan.swiftridefood
+        CODE_SIGN_ENTITLEMENTS: App/SwiftRideFood.entitlements
+        SWIFT_VERSION: 6.0
+    dependencies:
+      - package: Core
+      - package: Networking
+      - package: Data
+      - package: DesignSystem
+      - package: Analytics
+      - package: FeaturesAuth
+      - package: FeaturesHome
+      - package: FeaturesMap
+      - package: FeaturesOrders
+      - package: FeaturesCatalogUIKit
+      - package: FeatureFlags
+      - package: PushNotifications
+      - package: firebase-ios-sdk
+        product: FirebaseCore
+      - package: sentry-cocoa
+        product: Sentry
+      - target: NotificationServiceExtension
+
+  NotificationServiceExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Extensions/NotificationServiceExtension
+    info:
+      path: Extensions/NotificationServiceExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Notification Service
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.usernotifications.service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).NotificationService
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.evan.swiftridefood.notificationservice
+        SWIFT_VERSION: 6.0
+    dependencies:
+      - package: PushNotifications
+
+  SwiftRideFoodTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: App/Tests
+    settings:
+      base:
+        SWIFT_VERSION: 6.0
+    dependencies:
+      - target: SwiftRideFood
+
+  SwiftRideFoodUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: App/UITests
+    settings:
+      base:
+        SWIFT_VERSION: 6.0
+        TEST_TARGET_NAME: SwiftRideFood
+    dependencies:
+      - target: SwiftRideFood
+schemes:
+  SwiftRideFood:
+    build:
+      targets:
+        SwiftRideFood: all
+    test:
+      targets:
+        - SwiftRideFoodTests
+        - SwiftRideFoodUITests

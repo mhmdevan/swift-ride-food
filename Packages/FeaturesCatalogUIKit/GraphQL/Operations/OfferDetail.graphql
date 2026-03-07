@@ -1,0 +1,10 @@
+query OfferDetail($id: ID!) {
+  offerDetail(id: $id) {
+    id
+    title
+    subtitle
+    priceText
+    badgeText
+    imageURL
+  }
+}

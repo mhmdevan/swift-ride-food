@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="844" viewBox="0 0 390 844" role="img" aria-label="Map screen reference">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f766e" />
+      <stop offset="100%" stop-color="#115e59" />
+    </linearGradient>
+  </defs>
+  <rect width="390" height="844" fill="url(#bg)" />
+  <rect x="36" y="84" width="318" height="676" rx="36" fill="#042f2e" stroke="#0d9488" stroke-width="2" />
+  <text x="195" y="160" text-anchor="middle" fill="#ccfbf1" font-size="22" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">Map Tracking Screen</text>
+  <text x="195" y="196" text-anchor="middle" fill="#99f6e4" font-size="14" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">Replace with real screenshot</text>
+  <rect x="60" y="236" width="270" height="430" rx="16" fill="#0b3b3a" stroke="#2dd4bf" />
+  <circle cx="112" cy="338" r="8" fill="#34d399" />
+  <circle cx="268" cy="484" r="8" fill="#f97316" />
+  <path d="M112 338 C170 350, 210 440, 268 484" stroke="#22d3ee" stroke-width="4" fill="none" stroke-linecap="round" />
+</svg>

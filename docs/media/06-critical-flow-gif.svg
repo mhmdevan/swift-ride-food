@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Critical flow gif reference">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#1f2937" />
+    </linearGradient>
+  </defs>
+  <rect width="960" height="540" fill="url(#bg)" />
+  <rect x="120" y="70" width="720" height="400" rx="20" fill="#0f172a" stroke="#334155" stroke-width="2" />
+  <text x="480" y="185" text-anchor="middle" fill="#e2e8f0" font-size="36" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">Critical Flow GIF Placeholder</text>
+  <text x="480" y="238" text-anchor="middle" fill="#94a3b8" font-size="22" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">Login -> Orders -> Create -> Map Live Status</text>
+  <text x="480" y="300" text-anchor="middle" fill="#60a5fa" font-size="18" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, sans-serif">Replace this file with a recorded GIF when Xcode simulator capture is available</text>
+</svg>
