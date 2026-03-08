@@ -28,9 +28,6 @@ packages:
     path: Packages/FeatureFlags
   PushNotifications:
     path: Packages/PushNotifications
-  firebase-ios-sdk:
-    url: https://github.com/firebase/firebase-ios-sdk.git
-    from: 10.0.0
   sentry-cocoa:
     url: https://github.com/getsentry/sentry-cocoa.git
     from: 8.40.0
@@ -72,8 +69,6 @@ targets:
       - package: FeaturesCatalogUIKit
       - package: FeatureFlags
       - package: PushNotifications
-      - package: firebase-ios-sdk
-        product: FirebaseCore
       - package: sentry-cocoa
         product: Sentry
       - target: NotificationServiceExtension

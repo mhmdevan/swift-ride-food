@@ -11,7 +11,6 @@
 		00EC42666267AE99F9030D9C /* GlobalErrorCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22774DA9DE4231EC83B27AD /* GlobalErrorCenter.swift */; };
 		041076A9C9204E69726CAE39 /* PushNotifications in Frameworks */ = {isa = PBXBuildFile; productRef = E1BB239BD16BFA37870C3C22 /* PushNotifications */; };
 		0E99619C1F9043A86C9EC99F /* FeaturesCatalogUIKit in Frameworks */ = {isa = PBXBuildFile; productRef = F2EEE51B0FAAACDA369BF528 /* FeaturesCatalogUIKit */; };
-		137BF0A96A483C073C17FF5F /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 5482BD6652B7752ECB1220AD /* Sentry */; };
 		14100F1C8678C77370004C73 /* OffersDeepLinkContract.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544512B348CF5365DC755677 /* OffersDeepLinkContract.swift */; };
 		212BAFBD11843A82603E8448 /* AppRuntimeIntegrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7DB9F0F0D76A1AD21D093EA /* AppRuntimeIntegrations.swift */; };
 		2239A2622069E2AFE0D7F8BA /* OffersDeepLinkParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F7EAFF09842D2398D8CE0A1 /* OffersDeepLinkParser.swift */; };
@@ -54,7 +53,7 @@
 		E432E8BF1FD926E007B69927 /* XCUIElement+Input.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F426EEE5D66C77D4EE846D9 /* XCUIElement+Input.swift */; };
 		F21150EB157E45905EAB5E81 /* PushAuthorizationManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 836CB3845DB5EAEF5174FD4E /* PushAuthorizationManaging.swift */; };
 		F21D45EE51E8015BB9983AA0 /* SwiftRideFoodApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892483FA158E1A9B8D1F83C6 /* SwiftRideFoodApp.swift */; };
-		FA7B828BC5999F47160061E3 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 80F1E6DF208C63723AE7736D /* FirebaseCore */; };
+		FA7B828BC5999F47160061E3 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 5482BD6652B7752ECB1220AD /* Sentry */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -172,8 +171,7 @@
 				0E99619C1F9043A86C9EC99F /* FeaturesCatalogUIKit in Frameworks */,
 				A64D557821E12797607B6EED /* FeatureFlags in Frameworks */,
 				041076A9C9204E69726CAE39 /* PushNotifications in Frameworks */,
-				FA7B828BC5999F47160061E3 /* FirebaseCore in Frameworks */,
-				137BF0A96A483C073C17FF5F /* Sentry in Frameworks */,
+				FA7B828BC5999F47160061E3 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,7 +434,6 @@
 				F2EEE51B0FAAACDA369BF528 /* FeaturesCatalogUIKit */,
 				EA4E9A95C77DDA47736D6CE0 /* FeatureFlags */,
 				E1BB239BD16BFA37870C3C22 /* PushNotifications */,
-				80F1E6DF208C63723AE7736D /* FirebaseCore */,
 				5482BD6652B7752ECB1220AD /* Sentry */,
 			);
 			productName = SwiftRideFood;
@@ -467,7 +464,6 @@
 			mainGroup = D83AF39343CCFC71AB9FB697;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				EED67F500A1C59E0BDD28C18 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				D1241774C75FEEF1F8FA0E03 /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 				0623BB9FF6C60B5B66BF4324 /* XCLocalSwiftPackageReference "Packages/Analytics" */,
 				6333D65424D5160228A9B1C1 /* XCLocalSwiftPackageReference "Packages/Core" */,
@@ -942,14 +938,6 @@
 				minimumVersion = 8.40.0;
 			};
 		};
-		EED67F500A1C59E0BDD28C18 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.0.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -973,11 +961,6 @@
 		6AE34919E56BA71A2323B69F /* FeaturesHome */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FeaturesHome;
-		};
-		80F1E6DF208C63723AE7736D /* FirebaseCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EED67F500A1C59E0BDD28C18 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCore;
 		};
 		9268EB4693A4D035097DE00D /* FeaturesOrders */ = {
 			isa = XCSwiftPackageProductDependency;
