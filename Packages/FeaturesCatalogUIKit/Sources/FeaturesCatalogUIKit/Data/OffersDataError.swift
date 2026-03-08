@@ -15,47 +15,54 @@ public enum OffersDataError: Error, Equatable, Sendable {
     }
 
     public static func map(_ error: Error) -> OffersDataError {
+        mapKnownError(error) ?? .unknown
+    }
+
+    private static func mapKnownError(_ error: Error) -> OffersDataError? {
         if let offersError = error as? OffersDataError {
             return offersError
         }
-
         if error is CancellationError {
             return .cancelled
         }
-
         if let urlError = error as? URLError {
-            switch urlError.code {
-            case .timedOut:
-                return .timeout
-            case .cancelled:
-                return .cancelled
-            case .notConnectedToInternet,
-                 .networkConnectionLost,
-                 .cannotFindHost,
-                 .cannotConnectToHost,
-                 .dnsLookupFailed:
-                return .network
-            default:
-                return .unknown
-            }
+            return mapURLError(urlError)
         }
-
         if error is DecodingError {
             return .decoding
         }
-
         if let graphQLError = error as? OffersGraphQLError {
-            switch graphQLError {
-            case .invalidPayload:
-                return .decoding
-            case .requestFailed:
-                return .network
-            case .apolloNotConfigured:
-                return .server(statusCode: nil)
-            }
+            return mapGraphQLError(graphQLError)
         }
+        return nil
+    }
 
-        return .unknown
+    private static func mapURLError(_ error: URLError) -> OffersDataError {
+        switch error.code {
+        case .timedOut:
+            return .timeout
+        case .cancelled:
+            return .cancelled
+        case .notConnectedToInternet,
+             .networkConnectionLost,
+             .cannotFindHost,
+             .cannotConnectToHost,
+             .dnsLookupFailed:
+            return .network
+        default:
+            return .unknown
+        }
+    }
+
+    private static func mapGraphQLError(_ error: OffersGraphQLError) -> OffersDataError {
+        switch error {
+        case .invalidPayload:
+            return .decoding
+        case .requestFailed:
+            return .network
+        case .apolloNotConfigured:
+            return .server(statusCode: nil)
+        }
     }
 
     public var isCancellation: Bool {

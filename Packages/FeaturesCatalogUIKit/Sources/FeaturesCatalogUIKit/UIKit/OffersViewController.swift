@@ -256,10 +256,9 @@ public final class OffersViewController: UIViewController, UICollectionViewDataS
             imageLoadTasksByItemID[item.id] = task
         }
 
-        let source = UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier>(collectionView: collectionView) {
-            collectionView,
-            indexPath,
-            itemIdentifier in
+        let source = UICollectionViewDiffableDataSource<SectionIdentifier, ItemIdentifier>(
+            collectionView: collectionView
+        ) { collectionView, indexPath, itemIdentifier in
             collectionView.dequeueConfiguredReusableCell(
                 using: cellRegistration,
                 for: indexPath,
@@ -267,7 +266,7 @@ public final class OffersViewController: UIViewController, UICollectionViewDataS
             )
         }
 
-        source.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+        source.supplementaryViewProvider = { [weak self] collectionView, _, indexPath in
             guard let self else { return nil }
             return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
         }

@@ -44,6 +44,10 @@ final class OffersPerformanceMonitorTests: XCTestCase {
         let records = rumMonitor.trackedRecords()
 
         XCTAssertTrue(events.contains(where: { $0.name == ObservabilityEventName.Load.offersPaginationSample }))
-        XCTAssertTrue(records.contains(where: { $0.kind == "metric" && $0.name == ObservabilityEventName.Metric.offersPaginationErrorRate }))
+        XCTAssertTrue(
+            records.contains(
+                where: { $0.kind == "metric" && $0.name == ObservabilityEventName.Metric.offersPaginationErrorRate }
+            )
+        )
     }
 }

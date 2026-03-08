@@ -11,6 +11,12 @@ import SwiftUI
 final class AppCoordinator: ObservableObject {
     @Published var path: [AppRoute] = []
 
+    private struct DeepLinkContext {
+        let scheme: String
+        let host: String
+        let pathShape: String
+    }
+
     let dependencyContainer: AppDependencyContainer
     let homeViewModel: HomeViewModel
     private let offersDeepLinkParser: any OffersDeepLinkParsing
@@ -207,14 +213,14 @@ final class AppCoordinator: ObservableObject {
         }
     }
 
-    private func safeDeepLinkContext(from url: URL) -> (scheme: String, host: String, pathShape: String) {
+    private func safeDeepLinkContext(from url: URL) -> DeepLinkContext {
         let components = URLComponents(url: url, resolvingAgainstBaseURL: false)
         let scheme = components?.scheme?.lowercased() ?? "unknown"
         let host = components?.host?.lowercased() ?? "unknown"
         let pathComponents = url.pathComponents
             .filter { $0 != "/" && $0.isEmpty == false }
         let pathShape = "\(pathComponents.count)_segments"
-        return (scheme: scheme, host: host, pathShape: pathShape)
+        return DeepLinkContext(scheme: scheme, host: host, pathShape: pathShape)
     }
 
     private func trackScreenView(name: String, parameters: [String: String] = [:]) {

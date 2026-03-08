@@ -49,6 +49,14 @@ actor OffersFeedRefreshCoordinator {
     private var inFlightTask: Task<OffersFeedRefreshOutcome, Never>?
     private var lastSuccessfulRefreshAt: Date?
 
+    private struct RefreshAttemptContext: Sendable {
+        let reason: OffersFeedRefreshReason
+        let tracker: any AnalyticsTracking
+        let crashReporter: any CrashReporting
+        let rumMonitor: any RUMMonitoring
+        let sleep: @Sendable (UInt64) async -> Void
+    }
+
     init(
         tracker: any AnalyticsTracking,
         crashReporter: any CrashReporting,
@@ -107,8 +115,7 @@ actor OffersFeedRefreshCoordinator {
         }
 
         let rumMonitor = self.rumMonitor
-        let requestTask = Task<OffersFeedRefreshOutcome, Never> {
-            [tracker, crashReporter, pageLimit, rumMonitor, retryPolicy, sleep] in
+        let requestTask = Task<OffersFeedRefreshOutcome, Never> { [tracker, crashReporter, pageLimit, rumMonitor, retryPolicy, sleep] in
             let startedAt = Date()
             await crashReporter.addBreadcrumb(
                 CrashBreadcrumb(
@@ -124,15 +131,18 @@ actor OffersFeedRefreshCoordinator {
                 )
             )
 
-            let fetchResult = await Self.fetchFirstPageWithRetry(
-                repository: repository,
-                pageLimit: pageLimit,
+            let context = RefreshAttemptContext(
                 reason: reason,
                 tracker: tracker,
                 crashReporter: crashReporter,
                 rumMonitor: rumMonitor,
-                retryPolicy: retryPolicy,
                 sleep: sleep
+            )
+            let fetchResult = await Self.fetchFirstPageWithRetry(
+                repository: repository,
+                pageLimit: pageLimit,
+                retryPolicy: retryPolicy,
+                context: context
             )
 
             switch fetchResult {
@@ -194,14 +204,10 @@ actor OffersFeedRefreshCoordinator {
     private static func fetchFirstPageWithRetry(
         repository: any OffersRepository,
         pageLimit: Int,
-        reason: OffersFeedRefreshReason,
-        tracker: any AnalyticsTracking,
-        crashReporter: any CrashReporting,
-        rumMonitor: any RUMMonitoring,
         retryPolicy: OffersRefreshRetryPolicy,
-        sleep: @Sendable (UInt64) async -> Void
+        context: RefreshAttemptContext
     ) async -> Result<Void, Error> {
-        let allowsRetry = reason == .backgroundTask
+        let allowsRetry = context.reason == .backgroundTask
         var currentAttempt = 1
 
         while true {
@@ -218,38 +224,38 @@ actor OffersFeedRefreshCoordinator {
                 let backoffNanoseconds = retryPolicy.delayNanoseconds(forRetryAttempt: currentAttempt)
                 let backoffMilliseconds = Int(backoffNanoseconds / 1_000_000)
 
-                await tracker.track(
+                await context.tracker.track(
                     AnalyticsEvent(
                         name: ObservabilityEventName.Retry.offersFeedRetry,
                         parameters: [
-                            "reason": reason.rawValue,
+                            "reason": context.reason.rawValue,
                             "attempt": String(nextAttempt),
                             "backoff_ms": String(backoffMilliseconds)
                         ]
                     )
                 )
-                await crashReporter.addBreadcrumb(
+                await context.crashReporter.addBreadcrumb(
                     CrashBreadcrumb(
                         message: "Offers feed refresh retry scheduled",
                         category: "offers_refresh",
                         metadata: [
-                            "reason": reason.rawValue,
+                            "reason": context.reason.rawValue,
                             "attempt": String(nextAttempt),
                             "backoff_ms": String(backoffMilliseconds)
                         ]
                     )
                 )
-                rumMonitor.trackAction(
+                context.rumMonitor.trackAction(
                     name: ObservabilityEventName.Retry.offersFeedRetry,
                     attributes: [
-                        "reason": reason.rawValue,
+                        "reason": context.reason.rawValue,
                         "attempt": String(nextAttempt),
                         "backoff_ms": String(backoffMilliseconds)
                     ]
                 )
 
                 if backoffNanoseconds > 0 {
-                    await sleep(backoffNanoseconds)
+                    await context.sleep(backoffNanoseconds)
                 }
                 currentAttempt = nextAttempt
             }

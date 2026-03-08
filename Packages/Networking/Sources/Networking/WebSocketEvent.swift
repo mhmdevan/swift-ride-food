@@ -7,20 +7,20 @@ public enum WebSocketEvent: Equatable, Sendable {
 
 private struct WebSocketEnvelopeDTO: Decodable {
     let type: String
-    let payload: PayloadDTO
+    let payload: WebSocketPayloadDTO
+}
 
-    struct PayloadDTO: Decodable {
-        let orderID: UUID
-        let status: String?
-        let latitude: Double?
-        let longitude: Double?
+private struct WebSocketPayloadDTO: Decodable {
+    let orderID: UUID
+    let status: String?
+    let latitude: Double?
+    let longitude: Double?
 
-        enum CodingKeys: String, CodingKey {
-            case orderID = "order_id"
-            case status
-            case latitude
-            case longitude
-        }
+    enum CodingKeys: String, CodingKey {
+        case orderID = "order_id"
+        case status
+        case latitude
+        case longitude
     }
 }
 
